@@ -12,7 +12,7 @@ SEARCH_QUERY = "ClaudeCode"  # ←検索キーワード
 OUTPUT_JSONL = "youtube_results.jsonl"  # ←出力先ファイル名
 
 
-def youtube_search(query, max_results=5):
+def youtube_search(query, max_results=10):
     """YouTube Search API を叩いて結果を返す（過去1年〜現在の期間で絞り込み）"""
     url = "https://www.googleapis.com/youtube/v3/search"
 
