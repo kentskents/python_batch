@@ -33,6 +33,9 @@ def youtube_search(query, max_results=10):
         # （例: 2025-07-15T09:30:00Z）に合わせたもの。
         "publishedAfter": one_year_ago.strftime("%Y-%m-%dT%H:%M:%SZ"),   # この日時以降に投稿された動画
         "publishedBefore": now.strftime("%Y-%m-%dT%H:%M:%SZ"),          # この日時より前に投稿された動画
+        # order="date" は投稿日時で並び替える指定。ただしYouTube APIは「新しい順」固定で、
+        # 「古い順」は用意されていないため、取得後にPython側で並び替え直す。
+        "order": "date",
         "key": API_KEY
     }
 
@@ -87,7 +90,12 @@ def main():
 
     items = result.get("items", [])
 
-    print("\n=== 検索結果 ===")
+    # order="date" 指定によりAPI側から既に新しい順で返ってくるが、
+    # 念のためPython側でも publishedAt を基準に降順（新しい順）で並び替えておく。
+    # reverse=True にすると降順＝新しい順になる。
+    items = sorted(items, key=lambda item: item["snippet"]["publishedAt"], reverse=True)
+
+    print("\n=== 検索結果（投稿日が新しい順） ===")
     for item in items:
         video_id = item["id"]["videoId"]
         title = item["snippet"]["title"]
